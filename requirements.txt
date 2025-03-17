@@ -1,0 +1,5 @@
+pumpia
+numpy
+scipy
+pylibjpeg
+pylibjpeg-libjpeg
