@@ -30,10 +30,20 @@ class RepeatImagesCollection(BaseCollection):
     snr_output = OutputFrame(verbose_name="SNR Output")
     image1_output = OutputFrame(verbose_name="Image 1 Results")
     image2_output = OutputFrame(verbose_name="Image 2 Results")
+    full_results = OutputFrame()
 
     uniformity_window = WindowGroup([uniformity1, uniformity2], verbose_name="Uniformity")
 
     def load_outputs(self):
+        self.full_results.register_output(self.snr.signal)
+        self.full_results.register_output(self.snr.noise)
+        self.full_results.register_output(self.snr.snr)
+        self.full_results.register_output(self.snr.cor_snr)
+        self.full_results.register_output(self.uniformity1.uniformity,
+                                          verbose_name="Image 1 Uniformity")
+        self.full_results.register_output(self.uniformity2.uniformity,
+                                          verbose_name="Image 2 Uniformity")
+
         self.snr_output.register_output(self.snr.signal)
         self.snr_output.register_output(self.snr.noise)
         self.snr_output.register_output(self.snr.snr)
