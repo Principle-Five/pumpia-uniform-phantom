@@ -3,6 +3,7 @@ Subtraction SNR module for uniform phantom
 """
 import math
 import numpy as np
+import matplotlib.pyplot as plt
 
 from pumpia.module_handling.modules import PhantomModule
 from pumpia.module_handling.in_outs.roi_ios import InputGeneralROI
@@ -173,3 +174,15 @@ class SubSNR(PhantomModule):
                 cor_snr = snr * px_cor * bw_cor * avg_cor * pe_cor
 
             self.cor_snr.value = float(cor_snr)
+
+    def load_commands(self):
+        self.register_command("Show Subtraction Image", self.show_sub_image)
+
+    def show_sub_image(self):
+        if self.signal_roi1.roi is not None and self.signal_roi2.roi is not None:
+            roi1 = self.signal_roi1.roi
+            roi2 = self.signal_roi2.roi
+            sub_array = roi1.image.array[0] - roi2.image.array[0]
+            plt.imshow(sub_array, cmap='grey')
+            plt.colorbar()
+            plt.show()
