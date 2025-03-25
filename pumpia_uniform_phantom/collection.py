@@ -6,6 +6,7 @@ from pumpia.module_handling.module_collections import (OutputFrame,
                                                        WindowGroup,
                                                        BaseCollection)
 from pumpia.module_handling.in_outs.viewer_ios import MonochromeDicomViewerIO
+from pumpia.module_handling.in_outs.groups import IOGroup
 from pumpia.widgets.viewers import BaseViewer
 from pumpia.widgets.context_managers import AutoPhantomManagerGenerator
 
@@ -52,6 +53,9 @@ class RepeatImagesCollection(BaseCollection):
         self.image1_output.register_output(self.uniformity1.uniformity)
 
         self.image2_output.register_output(self.uniformity2.uniformity)
+
+        IOGroup([self.uniformity1.size, self.uniformity2.size])
+        IOGroup([self.uniformity1.kernel_bool, self.uniformity2.kernel_bool])
 
     def on_image_load(self, viewer: BaseViewer) -> None:
         if viewer is self.viewer1:
