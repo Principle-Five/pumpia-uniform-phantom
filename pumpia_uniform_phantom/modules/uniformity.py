@@ -9,8 +9,7 @@ from pumpia.module_handling.in_outs.roi_ios import InputGeneralROI
 from pumpia.module_handling.in_outs.viewer_ios import MonochromeDicomViewerIO
 from pumpia.module_handling.in_outs.simple import (PercInput,
                                                    BoolInput,
-                                                   FloatOutput,
-                                                   IntOutput)
+                                                   FloatOutput)
 from pumpia.image_handling.roi_structures import EllipseROI, RectangleROI
 from pumpia.file_handling.dicom_structures import Series, Instance
 from pumpia.module_handling.context import PhantomContext
@@ -24,12 +23,14 @@ class Uniformity(PhantomModule):
     Integral uniformity module for uniform phantom.
     """
     context_manager_generator = AutoPhantomManagerGenerator()
+    show_draw_rois_button = True
+    show_analyse_button = True
+
     viewer = MonochromeDicomViewerIO(row=0, column=0)
 
     size = PercInput(70, verbose_name="Size (%)")
     kernel_bool = BoolInput(verbose_name="Apply Low Pass Kernel")
 
-    slice_used = IntOutput()
     uniformity = FloatOutput(verbose_name="Uniformity (%)")
 
     uniformity_roi = InputGeneralROI("Uniformity ROI", default_type="ROI rectangle")

@@ -11,8 +11,7 @@ from pumpia.module_handling.in_outs.viewer_ios import MonochromeDicomViewerIO
 from pumpia.module_handling.in_outs.simple import (PercInput,
                                                    FloatInput,
                                                    BoolInput,
-                                                   FloatOutput,
-                                                   IntOutput)
+                                                   FloatOutput)
 from pumpia.image_handling.roi_structures import EllipseROI, RectangleROI
 from pumpia.file_handling.dicom_structures import Series, Instance
 from pumpia.file_handling.dicom_tags import MRTags
@@ -25,6 +24,9 @@ class SubSNR(PhantomModule):
     Module for subtraction method SNR on uniform phantom.
     """
     context_manager_generator = AutoPhantomManagerGenerator()
+    show_draw_rois_button = True
+    show_analyse_button = True
+
     viewer1 = MonochromeDicomViewerIO(row=0, column=0)
     viewer2 = MonochromeDicomViewerIO(row=0, column=1, allow_changing_rois=False)
 
@@ -35,7 +37,6 @@ class SubSNR(PhantomModule):
     avg_cor_bool = BoolInput(verbose_name="Averages Correction")
     pe_cor_bool = BoolInput(verbose_name="Phase Encode Correction")
 
-    slice_used = IntOutput()
     im_bw = FloatOutput(verbose_name="Image Bandwidth (Hz/px)")
     pixel_size_cor = FloatOutput(verbose_name="Pixel Size Correction")
     pe_cor = FloatOutput(verbose_name="Phase Encode Correction")
