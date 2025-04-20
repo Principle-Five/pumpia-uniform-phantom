@@ -10,8 +10,8 @@ from pumpia.module_handling.in_outs.groups import IOGroup
 from pumpia.widgets.viewers import BaseViewer
 from pumpia.widgets.context_managers import AutoPhantomManagerGenerator
 
-from .modules.sub_snr import SubSNR
-from .modules.uniformity import Uniformity
+from pumpia_uniform_phantom.modules.sub_snr import SubSNR
+from pumpia_uniform_phantom.modules.uniformity import Uniformity
 
 
 class RepeatImagesCollection(BaseCollection):
