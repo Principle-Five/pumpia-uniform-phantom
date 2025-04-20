@@ -4,6 +4,10 @@ It uses the subtraction SNR method and therefore expects a repeat image, however
 
 It is currently not validated and is provided as is, see the license for more information.
 
+The collection contains the following tests:
+- SNR
+- Uniformity
+
 # Usage
 
 Users should make themselves familiar with the [PumpIA user interface](https://principle-five.github.io/pumpia/usage/user_interface.html)
