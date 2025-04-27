@@ -60,8 +60,8 @@ class SubSNR(PhantomModule):
                 self.signal_roi1.register_roi(RectangleROI(self.viewer1.image,
                                                            xmin,
                                                            ymin,
-                                                           xmax,
-                                                           ymax,
+                                                           xmax - xmin,
+                                                           ymax - ymin,
                                                            slice_num=self.viewer1.current_slice))
             else:
                 a = round(factor * context.x_length / 2)
