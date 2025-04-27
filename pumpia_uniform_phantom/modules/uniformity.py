@@ -46,8 +46,8 @@ class Uniformity(PhantomModule):
                 self.uniformity_roi.register_roi(RectangleROI(self.viewer.image,
                                                               xmin,
                                                               ymin,
-                                                              xmax,
-                                                              ymax,
+                                                              xmax - xmin,
+                                                              ymax - ymin,
                                                               slice_num=self.viewer.current_slice))
             else:
                 a = round(factor * context.x_length / 2)
