@@ -26,6 +26,7 @@ class SubSNR(PhantomModule):
     context_manager_generator = AutoPhantomManagerGenerator()
     show_draw_rois_button = True
     show_analyse_button = True
+    name = "Subtraction SNR"
 
     viewer1 = MonochromeDicomViewerIO(row=0, column=0)
     viewer2 = MonochromeDicomViewerIO(row=0, column=1, allow_changing_rois=False)

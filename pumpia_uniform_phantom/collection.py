@@ -19,6 +19,7 @@ class RepeatImagesCollection(BaseCollection):
     Collection for uniform phantom with repeated scans.
     """
     context_manager_generator = AutoPhantomManagerGenerator()
+    name = "Uniform Phantom Repeat Collection"
 
     viewer1 = MonochromeDicomViewerIO(row=0, column=0)
     viewer2 = MonochromeDicomViewerIO(row=0, column=1)
