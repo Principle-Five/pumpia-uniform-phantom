@@ -25,6 +25,7 @@ class Uniformity(PhantomModule):
     context_manager_generator = AutoPhantomManagerGenerator()
     show_draw_rois_button = True
     show_analyse_button = True
+    name = "Uniformity"
 
     viewer = MonochromeDicomViewerIO(row=0, column=0)
 
