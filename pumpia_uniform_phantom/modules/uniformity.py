@@ -5,15 +5,15 @@ import numpy as np
 from scipy.signal import convolve2d
 
 from pumpia.module_handling.modules import PhantomModule
-from pumpia.module_handling.in_outs.roi_ios import InputGeneralROI
-from pumpia.module_handling.in_outs.viewer_ios import MonochromeDicomViewerIO
-from pumpia.module_handling.in_outs.simple import (PercInput,
-                                                   BoolInput,
-                                                   FloatOutput)
+from pumpia.module_handling.fields.roi_fields import GeneralROIField
+from pumpia.module_handling.fields.viewer_fields import MonochromeDicomViewerField
+from pumpia.module_handling.fields.simple import (PercField,
+                                                  BoolField,
+                                                  FloatField)
 from pumpia.image_handling.roi_structures import EllipseROI, RectangleROI
 from pumpia.file_handling.dicom_structures import Series, Instance
 from pumpia.module_handling.context import PhantomContext
-from pumpia.widgets.context_managers import AutoPhantomManagerGenerator
+from pumpia.widgets.context_managers import AutoPhantomManager
 
 LOW_PASS_KERNEL = np.array([[1, 2, 1], [2, 4, 2], [1, 2, 1]]) / 16
 
@@ -22,23 +22,23 @@ class Uniformity(PhantomModule):
     """
     Integral uniformity module for uniform phantom.
     """
-    context_manager_generator = AutoPhantomManagerGenerator()
+    context_manager = AutoPhantomManager()
     show_draw_rois_button = True
     show_analyse_button = True
-    name = "Uniformity"
+    title = "Uniformity"
 
-    viewer = MonochromeDicomViewerIO(row=0, column=0)
+    viewer = MonochromeDicomViewerField(row=0, column=0)
 
-    size = PercInput(70, verbose_name="Size (%)")
-    kernel_bool = BoolInput(verbose_name="Apply Low Pass Kernel")
+    size = PercField(70, verbose_name="Size (%)")
+    kernel_bool = BoolField(verbose_name="Apply Low Pass Kernel")
 
-    uniformity = FloatOutput(verbose_name="Uniformity (%)")
+    uniformity = FloatField(verbose_name="Uniformity (%)", read_only=True)
 
-    uniformity_roi = InputGeneralROI("Uniformity ROI", default_type="ROI rectangle")
+    uniformity_roi = GeneralROIField("Uniformity ROI", default_type="ROI rectangle")
 
     def draw_rois(self, context: PhantomContext, batch: bool = False) -> None:
         if isinstance(self.viewer.image, (Instance, Series)):
-            factor = self.size.value / 100
+            factor = self.size / 100
             if context.shape == "rectangle":
                 xmin = round(context.xcent - (factor * context.x_length / 2))
                 xmax = round(context.xcent + (factor * context.x_length / 2))
@@ -60,7 +60,7 @@ class Uniformity(PhantomModule):
                                                             b,
                                                             slice_num=self.viewer.current_slice))
 
-    def post_roi_register(self, roi_input: InputGeneralROI):
+    def post_roi_register(self, roi_input: GeneralROIField):
         if (roi_input == self.uniformity_roi
             and self.uniformity_roi.roi is not None
                 and self.manager is not None):
@@ -72,7 +72,7 @@ class Uniformity(PhantomModule):
     def analyse(self, batch: bool = False):
         if self.uniformity_roi.roi is not None:
             roi = self.uniformity_roi.roi
-            if self.kernel_bool.value:
+            if self.kernel_bool:
                 array = roi.image.array[0]
                 array = convolve2d(array, LOW_PASS_KERNEL, mode="same")
                 mask = roi.mask
@@ -83,4 +83,4 @@ class Uniformity(PhantomModule):
             max_val = max(pixel_values)
             min_val = min(pixel_values)
             uniformity = 100 * (1 - ((max_val - min_val) / (max_val + min_val)))  # type: ignore
-            self.uniformity.value = uniformity
+            self.uniformity = uniformity
