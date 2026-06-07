@@ -39,7 +39,7 @@ Source = "https://github.com/Principle-Five/pumpia-uniform-phantom"
 Issues = "https://github.com/Principle-Five/pumpia-uniform-phantom/issues"
 
 [tool.hatch.build.targets.sdist]
-include = ["pumpia-uniform-phantom*"]
+include = ["pumpia_uniform_phantom*"]
 
 [project.gui-scripts]
 pumpia-uniform-phantom = "pumpia_uniform_phantom.scripts.run_uniform_rpt:run_repeat_uniform"
