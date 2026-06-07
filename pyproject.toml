@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pumpia-uniform-phantom"
+version = "0.0.1"
+authors = [{ name = "Zack Ravetz et al." }]
+description = "Uniform MRI phantom analysis based using the PumpIA framework."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pumpia == 0.6.*, >=0.6.7",
+    "scipy",
+    "numpy",
+    "pylibjpeg[all]",
+    "matplotlib",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: 3.14',
+    "Intended Audience :: Science/Research",
+    'License :: OSI Approved :: BSD License',
+    'Topic :: Software Development',
+    'Topic :: Scientific/Engineering',
+    'Topic :: Scientific/Engineering :: Image Processing',
+]
+
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+
+[project.urls]
+Homepage = "https://www.principlefive.org.uk/"
+Documentation = "https://github.com/Principle-Five/pumpia-uniform-phantom"
+Source = "https://github.com/Principle-Five/pumpia-uniform-phantom"
+Issues = "https://github.com/Principle-Five/pumpia-uniform-phantom/issues"
+
+[tool.hatch.build.targets.sdist]
+include = ["pumpia-uniform-phantom*"]
+
+[project.gui-scripts]
+pumpia-uniform-phantom = "pumpia_uniform_phantom.scripts.run_uniform_rpt:run_repeat_uniform"
