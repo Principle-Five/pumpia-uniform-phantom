@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pumpia-uniform-phantom"
-version = "0.0.1"
+version = "0.0.2"
 authors = [{ name = "Zack Ravetz et al." }]
 description = "Uniform MRI phantom analysis based using the PumpIA framework."
 readme = "README.md"

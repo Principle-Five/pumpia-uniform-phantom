@@ -7,9 +7,11 @@ from scipy.signal import convolve2d
 from pumpia.module_handling.modules import PhantomModule
 from pumpia.module_handling.fields.roi_fields import GeneralROIField
 from pumpia.module_handling.fields.viewer_fields import MonochromeDicomViewerField
+from pumpia.widgets.viewers import MonochromeDicomViewer
 from pumpia.module_handling.fields.simple import (PercField,
                                                   BoolField,
-                                                  FloatField)
+                                                  FloatField,
+                                                  StringField)
 from pumpia.image_handling.roi_structures import EllipseROI, RectangleROI
 from pumpia.file_handling.dicom_structures import Series, Instance
 from pumpia.module_handling.context import PhantomContext
@@ -29,12 +31,23 @@ class Uniformity(PhantomModule):
 
     viewer = MonochromeDicomViewerField(row=0, column=0)
 
+    series_name = StringField(read_only=True)
+
     size = PercField(70, verbose_name="Size (%)")
     kernel_bool = BoolField(verbose_name="Apply Low Pass Kernel")
 
     uniformity = FloatField(verbose_name="Uniformity (%)", read_only=True)
 
     uniformity_roi = GeneralROIField("Uniformity ROI", default_type="ROI rectangle")
+
+    def on_image_load(self, viewer: MonochromeDicomViewer) -> None:
+        super().on_image_load(viewer)
+        if viewer.image is not None:
+            if isinstance(viewer.image, Instance):
+                image = viewer.image.series
+            else:
+                image = viewer.image
+            self.series_name = f"{image}"
 
     def draw_rois(self, context: PhantomContext, batch: bool = False) -> None:
         if isinstance(self.viewer.image, (Instance, Series)):

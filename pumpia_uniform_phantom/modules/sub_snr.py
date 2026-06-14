@@ -8,9 +8,11 @@ import matplotlib.pyplot as plt
 from pumpia.module_handling.modules import PhantomModule
 from pumpia.module_handling.fields.roi_fields import GeneralROIField
 from pumpia.module_handling.fields.viewer_fields import MonochromeDicomViewerField
+from pumpia.widgets.viewers import MonochromeDicomViewer
 from pumpia.module_handling.fields.simple import (PercField,
                                                   FloatField,
-                                                  BoolField)
+                                                  BoolField,
+                                                  StringField)
 from pumpia.image_handling.roi_structures import EllipseROI, RectangleROI
 from pumpia.file_handling.dicom_structures import Series, Instance
 from pumpia.file_handling.dicom_tags import MRTags
@@ -30,6 +32,9 @@ class SubSNR(PhantomModule):
     viewer1 = MonochromeDicomViewerField(row=0, column=0)
     viewer2 = MonochromeDicomViewerField(row=0, column=1, allow_changing_rois=False)
 
+    series_name1 = StringField(read_only=True)
+    series_name2 = StringField(read_only=True)
+
     size = PercField(70, verbose_name="Size (%)")
     ref_bandwidth = FloatField(1, verbose_name="Reference Bandwidth (Hz/px)")
     bw_cor_bool = BoolField(verbose_name="Bandwidth Correction")
@@ -48,6 +53,18 @@ class SubSNR(PhantomModule):
 
     signal_roi1 = GeneralROIField("SNR ROI1", default_type="ROI rectangle")
     signal_roi2 = GeneralROIField("SNR ROI2", allow_manual_draw=False)
+
+    def on_image_load(self, viewer: MonochromeDicomViewer) -> None:
+        super().on_image_load(viewer)
+        if viewer.image is not None:
+            if isinstance(viewer.image, Instance):
+                image = viewer.image.series
+            else:
+                image = viewer.image
+            if viewer is self.viewer1:
+                self.series_name1 = f"{image}"
+            elif viewer is self.viewer2:
+                self.series_name2 = f"{image}"
 
     def draw_rois(self, context: PhantomContext, batch: bool = False) -> None:
         if isinstance(self.viewer1.image, (Instance, Series)):

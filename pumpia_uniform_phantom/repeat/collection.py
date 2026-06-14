@@ -23,35 +23,53 @@ class RepeatImagesCollection(BaseCollection):
     viewer1 = MonochromeDicomViewerField(row=0, column=0)
     viewer2 = MonochromeDicomViewerField(row=0, column=1)
 
-    snr = SubSNR(verbose_name="SNR")
+    snr: SubSNR = SubSNR(verbose_name="SNR")
 
-    uniformity1 = Uniformity(verbose_name="Uniformity")
-    uniformity2 = Uniformity(verbose_name="Uniformity")
+    uniformity1: Uniformity = Uniformity(verbose_name="Uniformity")
+    uniformity2: Uniformity = Uniformity(verbose_name="Uniformity")
 
-    snr_output = FieldWindow(snr.fields.signal,
-                             snr.fields.noise,
-                             snr.fields.snr,
-                             snr.fields.cor_snr,
-                             verbose_name="SNR Output")
-    image1_output = FieldWindow(uniformity1.fields.uniformity, verbose_name="Image 1 Results")
-    image2_output = FieldWindow(uniformity2.fields.uniformity, verbose_name="Image 2 Results")
-    full_results = FieldWindow(snr.fields.signal,
-                               snr.fields.noise,
-                               snr.fields.snr,
-                               snr.fields.cor_snr,
-                               uniformity1.fields.uniformity,
-                               uniformity2.fields.uniformity,
-                               field_names=[None,
-                                            None,
-                                            None,
-                                            None,
-                                            "Image 1 Uniformity",
-                                            "Image 2 Uniformity"])
+    snr_output: FieldWindow = FieldWindow(snr.fields.series_name1,
+                                          snr.fields.series_name2,
+                                          snr.fields.signal,
+                                          snr.fields.noise,
+                                          snr.fields.snr,
+                                          snr.fields.cor_snr,
+                                          verbose_name="SNR Output")
+    image1_output: FieldWindow = FieldWindow(uniformity1.fields.series_name,
+                                             uniformity1.fields.uniformity,
+                                             verbose_name="Image 1 Results")
+    image2_output: FieldWindow = FieldWindow(uniformity2.fields.series_name,
+                                             uniformity2.fields.uniformity,
+                                             verbose_name="Image 2 Results")
+    full_results: FieldWindow = FieldWindow(snr.fields.series_name1,
+                                            snr.fields.series_name2,
+                                            snr.fields.signal,
+                                            snr.fields.noise,
+                                            snr.fields.snr,
+                                            snr.fields.cor_snr,
+                                            uniformity1.fields.uniformity,
+                                            uniformity2.fields.uniformity,
+                                            field_names=[None,
+                                                         None,
+                                                         None,
+                                                         None,
+                                                         None,
+                                                         None,
+                                                         "Image 1 Uniformity",
+                                                         "Image 2 Uniformity"])
 
-    size_group = FieldGroup(uniformity1.fields.size, uniformity2.fields.size)
-    kernel_group = FieldGroup(uniformity1.fields.kernel_bool, uniformity2.fields.kernel_bool)
+    series_name1: FieldGroup = FieldGroup(snr.fields.series_name1,
+                                          uniformity1.fields.series_name)
+    series_name2: FieldGroup = FieldGroup(snr.fields.series_name2,
+                                          uniformity2.fields.series_name)
+    size_group: FieldGroup = FieldGroup(uniformity1.fields.size,
+                                        uniformity2.fields.size)
+    kernel_group: FieldGroup = FieldGroup(uniformity1.fields.kernel_bool,
+                                          uniformity2.fields.kernel_bool)
 
-    uniformity_window = ModuleGroup(uniformity1, uniformity2, verbose_name="Uniformity")
+    uniformity_window: ModuleGroup = ModuleGroup(uniformity1,
+                                                 uniformity2,
+                                                 verbose_name="Uniformity")
 
     def on_image_load(self, viewer: MonochromeDicomViewer) -> None:
         if viewer is self.viewer1:
