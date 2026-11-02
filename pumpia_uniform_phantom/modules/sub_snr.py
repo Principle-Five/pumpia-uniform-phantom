@@ -147,21 +147,21 @@ class SubSNR(PhantomModule):
                 if self.bw_cor_bool:
                     ref_bw = self.ref_bandwidth
                     try:
-                        im_bw = image.get_tag(MRTags.PixelBandwidth)
+                        im_bw = image.get_value(MRTags.PixelBandwidth, True)
                         try:
-                            im_bw = float(im_bw)  # type: ignore
+                            im_bw = float(im_bw)
                         except (ValueError, TypeError):
                             im_bw = ref_bw
-                    except KeyError:
+                    except (KeyError,ValueError, TypeError):
                         im_bw = ref_bw
                     self.im_bw = im_bw
                     bw_cor = math.sqrt(im_bw / ref_bw)
 
                 if self.avg_cor_bool:
                     try:
-                        im_av = image.get_tag(MRTags.NumberOfAverages)
+                        im_av = image.get_value(MRTags.NumberOfAverages, True)
                         try:
-                            im_av = float(im_av)  # type: ignore
+                            im_av = float(im_av)
                         except (ValueError, TypeError):
                             im_av = 1
                     except KeyError:
@@ -172,22 +172,31 @@ class SubSNR(PhantomModule):
                 if self.pe_cor_bool:
                     try:
                         im_pe = float(
-                            image.get_tag(MRTags.NumberOfPhaseEncodingSteps))  # type: ignore
+                            image.get_value(MRTags.NumberOfPhaseEncodingSteps, True))
+                        self.logger.info("phase encode steps from No. PE Steps tag.")
                     except (KeyError, ValueError, TypeError):
-                        im_pe = 1
-
-                    if im_pe == 1:
                         try:
-                            if image.get_tag(MRTags.InPlanePhaseEncodingDirection) == "ROW":
-                                num = int(
-                                    image.get_tag(MRTags.Rows))  # type: ignore
-                            else:
-                                num = int(
-                                    image.get_tag(MRTags.Columns))  # type: ignore
-                            im_pe = float(
-                                image.get_tag(MRTags.PercentSampling)) * num  # type: ignore
+                            percent_sampling = float(
+                                image.get_value(MRTags.PercentSampling, True)) / 100
+                            try:
+                                num = int(max(image.get_value(MRTags.AcquisitionMatrix, True)[2:]))
+                                im_pe = percent_sampling * num
+                                self.logger.info("phase encode steps from acquisition matrix tag.")
+                            except (KeyError, ValueError, TypeError):
+                                if image.get_value(
+                                        MRTags.InPlanePhaseEncodingDirection, True) == "ROW":
+                                    num = int(image.get_value(MRTags.Rows, True))
+                                else:
+                                    num = int(image.get_value(MRTags.Columns, True))
+                                im_pe = percent_sampling * num
+                                self.logger.info("phase encode steps from rows/columns tag.")
                         except (KeyError, ValueError, TypeError):
                             im_pe = 1
+                            self.logger.info("phase encode steps not found in DICOM tags.")
+
+                    self.logger.info("phase encode steps = %s", im_pe)
+                    pe_cor = 1 / math.sqrt(im_pe)
+                    self.pe_cor = pe_cor
 
                     pe_cor = 1 / math.sqrt(im_pe)
                     self.pe_cor = pe_cor

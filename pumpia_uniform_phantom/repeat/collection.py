@@ -28,19 +28,6 @@ class RepeatImagesCollection(BaseCollection):
     uniformity1: Uniformity = Uniformity(verbose_name="Uniformity")
     uniformity2: Uniformity = Uniformity(verbose_name="Uniformity")
 
-    snr_output: FieldWindow = FieldWindow(snr.fields.series_name1,
-                                          snr.fields.series_name2,
-                                          snr.fields.signal,
-                                          snr.fields.noise,
-                                          snr.fields.snr,
-                                          snr.fields.cor_snr,
-                                          verbose_name="SNR Output")
-    image1_output: FieldWindow = FieldWindow(uniformity1.fields.series_name,
-                                             uniformity1.fields.uniformity,
-                                             verbose_name="Image 1 Results")
-    image2_output: FieldWindow = FieldWindow(uniformity2.fields.series_name,
-                                             uniformity2.fields.uniformity,
-                                             verbose_name="Image 2 Results")
     full_results: FieldWindow = FieldWindow(snr.fields.series_name1,
                                             snr.fields.series_name2,
                                             snr.fields.signal,
@@ -57,6 +44,19 @@ class RepeatImagesCollection(BaseCollection):
                                                          None,
                                                          "Image 1 Uniformity",
                                                          "Image 2 Uniformity"])
+    snr_output: FieldWindow = FieldWindow(snr.fields.series_name1,
+                                          snr.fields.series_name2,
+                                          snr.fields.signal,
+                                          snr.fields.noise,
+                                          snr.fields.snr,
+                                          snr.fields.cor_snr,
+                                          verbose_name="SNR Output")
+    image1_output: FieldWindow = FieldWindow(uniformity1.fields.series_name,
+                                             uniformity1.fields.uniformity,
+                                             verbose_name="Image 1 Results")
+    image2_output: FieldWindow = FieldWindow(uniformity2.fields.series_name,
+                                             uniformity2.fields.uniformity,
+                                             verbose_name="Image 2 Results")
 
     series_name1: FieldGroup = FieldGroup(snr.fields.series_name1,
                                           uniformity1.fields.series_name)
